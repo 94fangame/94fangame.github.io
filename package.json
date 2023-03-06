@@ -1,0 +1,26 @@
+{
+  "name": "tvdint-fangame",
+  "version": "1.0.0",
+  "description": "npm init -y\r npm install --save phaser",
+  "main": "index.js",
+  "dependencies": {
+    "eventemitter3": "^4.0.7",
+    "http-server": "^14.1.1",
+    "inherits": "^2.0.3",
+    "path": "^0.12.7",
+    "phaser": "^3.55.2",
+    "process": "^0.11.10",
+    "util": "^0.10.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "keywords": [
+    "tvdint",
+    "94shinu",
+    "sugushinu",
+    "kyuuketsuki"
+  ]
+}

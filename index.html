@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"/> -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="shortcut icon" href="./assets/ui/favicon.ico" type="image/x-icon"/>
+  <link rel="stylesheet" href="./assets/css/styles.css"/>
+  <title>【FANGAME】 TVDINT</title>
+</head>
+<body>
+  
+  <header>
+    <img src="./assets/ui/logo.png"
+    width="384" height="256"
+    alt="The Vampire Dies in no Time (Fangame)"/>
+    <h1>Non-profit<br/>Fan game(s)</h1>
+  </header>
+  
+  <main id="container">
+  </main>
+
+  <footer>
+    Saaand! <span id="year"></span>
+  </footer>
+  
+  <script src="//cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.js"></script>
+  <!-- <script src="./node_modules/phaser/dist/phaser.js"></script> -->
+  <script src="./src/index.js" type="module"></script>
+  <script>
+    document.getElementById('year').innerHTML = (new Date()).getFullYear();
+  </script>
+</body>
+</html>

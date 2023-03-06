@@ -1,0 +1,103 @@
+@import url('font-pixel.css');
+
+* {
+  padding: 0px;
+	margin: 0px;
+	color: inherit;
+	font-family: 'Pixel', 'Courier New', Courier, monospace;
+	outline: none;
+	border: none;
+	list-style: none;
+  /* Pixel art */
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+:root {
+	/* d02c82 */
+	--primary-light: #FF2E83;
+	--primary-main: #3A277D;
+	--primary-dark: #281E2E;
+	--accent-light: #FFFF00;
+	--accent-main: #FFC713;
+	--accent-dark: #FF8B26;
+	--text-primary-dark: #000000;
+	--text-secondary-dark: #281E2E;
+	--text-primary-light: #F0F1F2;
+	--text-secondary-light: #E1E7F2;
+}
+
+html, body {
+	width: 100%;
+	height: 100%;
+}
+
+body {
+	font-size: 16px;
+	background-attachment: fixed;
+	background-image: linear-gradient(to top, #000, #3a277d, #ff2e83, #ff2e83);
+	color: var(--text-primary-light);
+}
+
+
+/* Scroll */
+::-webkit-scrollbar {
+	width: 8px;
+	height: 8px;
+}
+::-webkit-scrollbar-track { border-radius: 0px; }
+::-webkit-scrollbar-thumb { border-radius: 0px; }
+::-webkit-scrollbar-track { background: var(--primary-dark); }
+::-webkit-scrollbar-thumb { background: var(--accent-main); }
+::-webkit-scrollbar-corner { background: var(--primary-dark); }
+::-webkit-resizer{
+  border: 9px solid transparent;
+  border-bottom-color: var(--accent-main);
+  border-right-color: var(--accent-main);
+}
+
+/* Mark */
+mark {
+  background-color: var(--primary-light);
+  padding: 0px 0.125em;
+}
+::selection {
+  background-color: var(--accent-light);
+}
+::-moz-selection {
+	background-color: var(--accent-light);
+  color: var(--text-primary-dark);
+}
+mark, ::selection {
+	color: var(--text-primary-dark);
+}
+h1 mark, h2 mark, h3 mark, h4 mark, h5 mark {
+  padding: 0px 0px 0px 0.25em;
+}
+
+
+/* Header & Footer */
+header, footer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 1em;
+}
+header {
+	color: var(--text-secondary-dark);
+}
+footer {
+	padding: 1em 1em 2em;
+}
+
+
+
+/* Container Game */
+#container {
+	width: fit-content;
+	margin: 1em auto;
+	padding: 1em;
+	background: linear-gradient(to bottom, #F0F1F2, #E1E7F2);
+	color: var(--text-secondary-dark);
+}

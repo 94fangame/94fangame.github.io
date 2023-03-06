@@ -1,0 +1,15 @@
+@font-face {
+  /* font-family: 'fontello';
+  src: url('../font/fontello.eot?89317259');
+  src: url('../font/fontello.eot?89317259#iefix') format('embedded-opentype'),
+       url('../font/fontello.woff2?89317259') format('woff2'),
+       url('../font/fontello.woff?89317259') format('woff'),
+       url('../font/fontello.ttf?89317259') format('truetype'),
+       url('../font/fontello.svg?89317259#fontello') format('svg');
+  font-weight: normal;
+  font-style: normal; */
+  font-family: 'Pixel';
+  src: url('../fonts/uni05_54.ttf') format('truetype');
+  /* font-weight: normal;
+  font-style: normal; */
+}
