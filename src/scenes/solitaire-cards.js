@@ -1,6 +1,7 @@
-import { loadBmpFonts, loadBtnTextures, loadCards, loadCharactersTxts } from "../utils/loaders.js";
+import { loadBmpFonts, loadBtnTextures, loadCards, loadCharactersTxts, loadIcons } from "../utils/loaders.js";
 import Button, { BtnSizes, BtnTypes } from "../components/button.js";
 import Card, { CardSuits } from "../components/card.js";
+import { Colors } from "../utils/colors.js";
 
 
 export class SolitaireCards extends Phaser.Scene {
@@ -12,6 +13,7 @@ export class SolitaireCards extends Phaser.Scene {
     loadCards(this);
     loadBmpFonts(this);
     loadBtnTextures(this);
+    loadIcons(this);
     loadCharactersTxts(this);
   }
 
@@ -21,10 +23,13 @@ export class SolitaireCards extends Phaser.Scene {
 
   create() {
     if (!this.reorder && localStorage.getItem( 'savedCards' )) {
+      // this.scene.start('Level', {game:'Solitaire'});
       this.scene.start('Solitaire');
     }
 
-    const btnSave = this.add.existing(new Button(this, 64, 304, BtnTypes.COMMON, BtnSizes.LARGE, 'Save default'));
+    const btnSave = this.add.existing(
+      new Button(this, 64, 304, BtnTypes.COMMON, BtnSizes.LARGE, 'save', 'Save default')
+    );
 
     // four-suited playing cards
     this.toSwap = null;
@@ -56,7 +61,7 @@ export class SolitaireCards extends Phaser.Scene {
               this.toSwap = null;
             }
           }
-          btnSave.setText('Save cards');
+          btnSave.setContent('Save cards', 'save');
         });
       }
     }
@@ -66,17 +71,21 @@ export class SolitaireCards extends Phaser.Scene {
     displaySuit(CardSuits.CLOVERS, 6.75);
 
     //TITLE
-    this.add.bitmapText(160, 8, 'Pixel','Swap as you like!')
-      .setOrigin(0.5, 0).setFontSize(8);
+    this.add.bitmapText(184, 6, 'Pixel','Swap as you like!', 16)
+      .setOrigin(0.5, 0).setTint(Colors.dark);
+    this.add.image(72, 16, 'icon swap').setScale(2);
     
-    const btnPlay = this.add.existing(new Button(this, 280, 304, BtnTypes.ACCENT, BtnSizes.MEDIUM, 'PLAY!'));
-    btnPlay.on(Phaser.Input.Events.POINTER_DOWN, ()=>{
+    const btnPlay = this.add.existing(
+      new Button(this, 280, 304, BtnTypes.ACCENT, BtnSizes.MEDIUM, 'play', 'PLAY!')
+    );
+    btnPlay.on(Phaser.Input.Events.POINTER_UP, ()=>{
+      // this.scene.start('Level', {game:'Solitaire'});
       this.scene.start('Solitaire');
     });
 
     btnSave.on(Phaser.Input.Events.POINTER_DOWN, ()=>{
       localStorage.setItem( 'savedCards', true );
-      btnSave.setText('Saved!');
+      btnSave.setContent('Saved!', 'check');
     });
   }
 

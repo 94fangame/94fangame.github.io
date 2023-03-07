@@ -18,8 +18,8 @@ export const loadCharactersTxts = (scene)=>{
 export const loadBmpFonts = (scene) => {
   scene.load.bitmapFont('Pixel', './assets/fonts/Uni0554_16.png', './assets/fonts/Uni0554_16.xml');
   scene.load.bitmapFont('Pixel bold', './assets/fonts/Uni0554_bold_24.png', './assets/fonts/Uni0554_bold_24.xml');  
-  scene.load.bitmapFont('Pixel bold white',
-    './assets/fonts/Uni0554_bold_24_w.png', './assets/fonts/Uni0554_bold_24_w.xml');
+  scene.load.bitmapFont('Pixel border',
+    './assets/fonts/Uni0554_border_24.png', './assets/fonts/Uni0554_border_24.xml');
 }
 
 
@@ -44,4 +44,19 @@ export const loadCards = (scene)=>{
   });
   scene.load.image( 'card line', './assets/ui/card_line.png' );
   scene.load.image( 'card back', './assets/ui/card_back.png' );
+}
+
+
+export const loadIcons = (scene)=>{
+  scene.load.image('icon check','./assets/ui/ic_check.png');
+  scene.load.image('icon cancel','./assets/ui/ic_cancel.png');
+  scene.load.image('icon new','./assets/ui/ic_new.png');
+  scene.load.image('icon play','./assets/ui/ic_play.png');
+  scene.load.image('icon save','./assets/ui/ic_save.png');
+  scene.load.image('icon swap','./assets/ui/ic_swap.png');
+  scene.load.image('icon undo','./assets/ui/ic_undo.png');
+  scene.load.spritesheet('icon levels', './assets/ui/ic_levels.png', {
+    frameWidth: 12, frameHeight: 12
+  });
+  scene.load.image('icon change-lvl','./assets/ui/ic_change-level.png');
 }

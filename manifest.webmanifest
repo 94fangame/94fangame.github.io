@@ -1,0 +1,16 @@
+{
+  "short_name": "TVDINT FANGAME",
+  "name": "The Vampire Dies in no Time (Fangame)",
+  "description": "Non profit game(s) of Kyuuketsuki sugu shinu",
+  "lang": "en-US",
+  "icons": [
+    {
+      "src": "./assets/ui/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ],
+  "display": "fullscreen",
+  "theme_color": "#FF2E83",
+  "background_color": "#3A277D"
+}

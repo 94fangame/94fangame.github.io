@@ -1,5 +1,6 @@
 // import Phaser from "phaser";
 import characters from "../constants/characters.json" assert { type: "json" };
+import { Colors } from "../utils/colors.js";
 
 export const CardSuits = {
   HEARTS: 0,
@@ -40,9 +41,9 @@ export default class Card extends Phaser.GameObjects.Container {
 
     this.pressed = false;
     this.Tint = {
-      DEFAULT: 0xFFFFFF,
-      HOVER: 0xF8FAFF,
-      CLICKED: 0xFFFF00,
+      DEFAULT: Colors.white,
+      HOVER: Colors.light,
+      CLICKED: Colors.accent.light,
     };
 
     // this.firstClickTime = (new Date()).getTime();
@@ -77,7 +78,7 @@ export default class Card extends Phaser.GameObjects.Container {
     } else {
       this.removeInteractive();
       this.setAlpha(0.5);
-      this.bg.setTint(0x281E2E);
+      this.bg.setTint(Colors.dark);
     }
   }
 
