@@ -114,7 +114,7 @@ export class Nonogram extends Phaser.Scene {
           livesLost++;
           if (livesLost == maxLives) {
             console.log('No more lives :c');
-            this.add.bitmapText(168, 136, 'Pixel bold','Not lives left :c').setOrigin(0.5).setTint(Colors.primary.dark);
+            this.add.bitmapText(168, 136, 'Pixel bold','No lives left :c').setOrigin(0.5).setTint(Colors.primary.dark);
             this.add.image(168, 192, 'lose');
             btnRetry.x = 168;
             btnRetry.y = 256;
