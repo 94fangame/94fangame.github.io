@@ -53,5 +53,10 @@ export default class LevelSelector extends Phaser.GameObjects.Container {
       });
       this.add( this.btnCancel );
     }
+    this.btnExit = new Button(scene, 160, 256, BtnTypes.CANCEL, BtnSizes.MEDIUM, 'cancel', 'Exit');
+    this.btnExit.on(Phaser.Input.Events.POINTER_UP, ()=>{
+      scene.scene.start('Choose Game');
+    });
+    this.add( this.btnExit );
   }
 }

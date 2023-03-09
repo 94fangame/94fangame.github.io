@@ -3,7 +3,7 @@
 import { Colors } from "../utils/colors.js";
 
 export const BtnSizes = {ICON:1, SMALL:3, MEDIUM:4, LARGE:6};
-export const BtnTypes = {COMMON:0, ACCENT:1, CANCEL:2, EASY:3, MEDIUM:4, HARD:5};
+export const BtnTypes = {EMPTY:0, COMMON:1, ACCENT:2, CANCEL:3, EASY:4, MEDIUM:5, HARD:6};
 
 export default class Button extends Phaser.GameObjects.Container {
   
@@ -16,8 +16,14 @@ export default class Button extends Phaser.GameObjects.Container {
       .setOrigin(0.5);
     
     this.txt.setScale(0.33);
-    this.icon.x -= ( this.txt.text.length*3 + 4 );
-    this.txt.x += 6;
+    if (icon == '') {
+      this.icon.setVisible(false);
+      this.txt.x = this.img.width/2 - this.txt.width;
+      // Phaser.Display.Align.In.Center(this.txt, this.img);
+    } else if (text =! '') {
+      this.icon.x -= ( this.txt.text.length*3 + 4 );
+      this.txt.x += 6;
+    }
     
     
     this.add(this.img);
@@ -41,6 +47,10 @@ export default class Button extends Phaser.GameObjects.Container {
       }
       else {
         switch (type) {
+          case BtnTypes.EMPTY:
+            this.Tint.DEFAULT = Colors.light;
+            this.txt.setTint(Colors.dark);
+            break;
           case BtnTypes.CANCEL:
             this.Tint.DEFAULT = Colors.dark; break;
           case BtnTypes.EASY:
@@ -51,7 +61,7 @@ export default class Button extends Phaser.GameObjects.Container {
             this.Tint.DEFAULT = 0xC03533; break;
         }
         this.Tint.HOVER = this.Tint.DEFAULT + Colors.hover;
-        this.Tint.CLICKED = this.Tint.DEFAULT + Colors.CLICKED;
+        this.Tint.CLICKED = this.Tint.DEFAULT + Colors.clicked;
       }
     }
 
@@ -104,5 +114,12 @@ export default class Button extends Phaser.GameObjects.Container {
     if (text != '') { this.setText(text); }
     if (icon != '') { this.setIcon(icon, num); }
     this.icon.x = -( this.txt.text.length*3 + 4 );
+  }
+
+  setTint(color) {
+    this.Tint.DEFAULT = color;
+    this.Tint.HOVER = color + Colors.hover;
+    this.Tint.CLICKED = color + Colors.clicked;
+    this.img.setTint(this.Tint.DEFAULT);
   }
 }

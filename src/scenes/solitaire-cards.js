@@ -11,10 +11,6 @@ export class SolitaireCards extends Phaser.Scene {
   
   preload() {
     loadCards(this);
-    loadBmpFonts(this);
-    loadBtnTextures(this);
-    loadIcons(this);
-    loadCharactersTxts(this);
   }
 
   init(data) {

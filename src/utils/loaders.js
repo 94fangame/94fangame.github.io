@@ -55,6 +55,7 @@ export const loadIcons = (scene)=>{
   scene.load.image('icon save','./assets/ui/ic_save.png');
   scene.load.image('icon swap','./assets/ui/ic_swap.png');
   scene.load.image('icon undo','./assets/ui/ic_undo.png');
+  scene.load.image('icon retry','./assets/ui/ic_retry.png');
   scene.load.spritesheet('icon levels', './assets/ui/ic_levels.png', {
     frameWidth: 12, frameHeight: 12
   });
