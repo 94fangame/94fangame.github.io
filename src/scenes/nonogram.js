@@ -53,7 +53,7 @@ export class Nonogram extends Phaser.Scene {
     // GRID
     // Colors
     let grid = [];
-    let img = this.add.image(160, 160,this.character).setScale(pxSide).setVisible(false);
+    let img = this.add.image(pTop.x+(side-1)*pxSide/2, pTop.y+(side-1)*pxSide/2,this.character).setScale(pxSide).setVisible(false);
     for (let y = 0; y < side; y++) {
       let row = [];
       for (let x = 0; x < side; x++) {
@@ -116,8 +116,6 @@ export class Nonogram extends Phaser.Scene {
             console.log('No more lives :c');
             this.add.bitmapText(168, 136, 'Pixel bold','No lives left :c').setOrigin(0.5).setTint(Colors.primary.dark);
             this.add.image(168, 192, 'lose');
-            btnRetry.x = 168;
-            btnRetry.y = 256;
             r.setActive(false);
           }
         }
@@ -127,7 +125,7 @@ export class Nonogram extends Phaser.Scene {
           qCompleted ++;
           r.setFillStyle(isPainting ? Colors.dark : Colors.primary.light);
           r.removeInteractive();
-          console.log(qCompleted + '/' + qToComplete);
+          // console.log(qCompleted + '/' + qToComplete);
         } else { paintX(x, y, !isPainting); }
         if (qCompleted == qToComplete) {
           this.add.existing( new Congrats(this) );
@@ -143,7 +141,7 @@ export class Nonogram extends Phaser.Scene {
         let r = grid.at(y).at(x);
         r.obj = this.add.rectangle( pos.x, pos.y, pxSide*2 +0.5, pxSide*2 +2)
                 .setScale(0.5).setInteractive();
-                //, grid.at(y).at(x) ? Colors.dark : Colors.white
+                //, grid.at(y).at(x).isPaint ? Colors.dark : Colors.white
       }
     }
     this.input.on(Phaser.Input.Events.POINTER_UP, ()=>{ isClicking = false; });
@@ -182,8 +180,8 @@ export class Nonogram extends Phaser.Scene {
       let txtRow = [];
       let q = 0;
       let all0 = true;
-      for (let x = side-1; x >= 0; x--) {
-        if ( grid.at(y).at(x).isPaint ) {
+      for (let x = side-1; x >= -1; x--) {
+        if (x>=0 && grid.at(y).at(x).isPaint ) {
           q++;
           all0 = false;
         }
@@ -214,8 +212,8 @@ export class Nonogram extends Phaser.Scene {
       let txtCol = []
       let q = 0;
       let all0 = true;
-      for (let y = side-1; y >= 0; y--) {
-        if ( grid.at(y).at(x).isPaint ) {
+      for (let y = side-1; y >= -1; y--) {
+        if (y>=0 && grid.at(y).at(x).isPaint ) {
           q++;
           all0 = false;
         }
