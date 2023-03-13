@@ -1,6 +1,5 @@
-import { loadBmpFonts, loadCharactersTxts } from "../utils/loaders.js";
 import { Colors } from "../utils/colors.js";
-import characters from "../constants/characters.json" assert { type: "json" };
+import { characters } from "../constants/characters.js";
 import Button, { BtnSizes, BtnTypes } from "../components/button.js";
 
 export class NonogramLvls extends Phaser.Scene {

@@ -1,7 +1,7 @@
 import Button, { BtnSizes, BtnTypes } from "../components/button.js";
 import Congrats from "../components/congrats.js";
 import { Colors } from "../utils/colors.js";
-import { loadBmpFonts, loadBtnTextures, loadCharactersTxts, loadIcons } from "../utils/loaders.js";
+import { loadBtnTextures, loadIcons } from "../utils/loaders.js";
 
 export class Nonogram extends Phaser.Scene {
   constructor() {
@@ -14,9 +14,6 @@ export class Nonogram extends Phaser.Scene {
     this.load.spritesheet('hearts','./assets/ui/hearts.png', {frameWidth: 16, frameHeight: 16});
     this.load.image('congrats','./assets/ui/congrats.png');
     this.load.image('lose','./assets/ui/losing.png');
-    // loadCharactersTxts(this);
-    // loadBmpFonts(this);
-    // this.load.image( 'frame', './assets/ui/frame.png' );
   }
 
   init(data) {
@@ -98,13 +95,15 @@ export class Nonogram extends Phaser.Scene {
     };
 
     const paintX = (x=0, y=0, isOk=true)=>{
-      let curr = grid.at(y).at(x);
-      // curr.obj.destroy();
-      curr.obj.setVisible(false);
-      let pos = getXYworld(x,y);
-      this.add.bitmapText(pos.x+1, pos.y, 'Pixel', 'X', 8)
-        .setOrigin(0.5).setAlpha(0.5)
-        .setTint(isOk ? Colors.primary.dark : Colors.primary.light);
+      // let curr = grid.at(y).at(x);
+      if (grid.at(y).at(x).obj != null) {
+        grid.at(y).at(x).obj.destroy();
+        grid.at(y).at(x).obj = null;
+        let pos = getXYworld(x,y);
+        this.add.bitmapText(pos.x+1, pos.y, 'Pixel', 'X', 8)
+          .setOrigin(0.5).setAlpha(0.5)
+          .setTint(isOk ? Colors.primary.dark : Colors.primary.light);
+      }
     }
     
     const validateCell = (r, x, y)=>{
@@ -174,83 +173,124 @@ export class Nonogram extends Phaser.Scene {
     
 
     //NUMS
+    // clueRs | clueCs {qToDo: , xys: , txt: }
     //per ROW
-    let txtRows = [];
+    let clueRows = [];
     for (let y = 0; y < side; y++) {
-      let txtRow = [];
-      let q = 0;
+      let clueRow = [];
+      let xs = [];
       let all0 = true;
       for (let x = side-1; x >= -1; x--) {
         if (x>=0 && grid.at(y).at(x).isPaint ) {
-          q++;
+          xs.push(x);
           all0 = false;
         }
         else {
-          if (q!=0) {
-            txtRow.push(
-              this.add.bitmapText(
-                gTop.x + gC.sNums - txtRow.length*10 -5,
+          if (xs.length>0) {
+            clueRow.push({
+              xs: xs,
+              txt: this.add.bitmapText(
+                gTop.x + gC.sNums - clueRow.length*10 -5,
                 pTop.y+2 + y*pxSide,
-                'Pixel', q, 6)
+                'Pixel', xs.length, 6)
                 .setOrigin(0.5, 0)
-                .setTint(Colors.primary.dark).setAlpha(0.5)
-            );
+                .setTint(Colors.primary.dark).setAlpha(0.5),
+            });
           }
-          q = 0;
+          xs = [];
         }
       }
       if (all0) {
         for (let x = 0; x < side; x++) { paintX(x, y, true); }
       }
-      txtRows.push(txtRow);
-      // this.add.bitmapText(gTop.x + gC.sNums -1, pTop.y+2 + y*pxSide, 'Pixel', txt, 6)
+      clueRows.push(clueRow);
+      // this.add.bitmapText(gTop.x + gC.sNums -1, pTop.y+2 + y*pxSide, 'Pixel', clue, 6)
       //   .setOrigin(1, 0).setTint(Colors.primary.dark).setAlpha(0.5);
     }
     //per COL
-    let txtCols = [];
+    let clueCols = [];
     for (let x = 0; x < side; x++) {
-      let txtCol = []
-      let q = 0;
+      let clueCol = []
+      let ys = [];
       let all0 = true;
       for (let y = side-1; y >= -1; y--) {
         if (y>=0 && grid.at(y).at(x).isPaint ) {
-          q++;
+          ys.push(y);
           all0 = false;
         }
         else {
-          if (q!=0) {
-            txtCol.push(
-              this.add.bitmapText(
+          if (ys.length > 0) {
+            clueCol.push({
+              ys: ys,
+              txt: this.add.bitmapText(
                 pTop.x+2 + x*pxSide,
-                gTop.y + gC.sNums - txtCol.length*10 -5,
-                'Pixel', q, 6)
+                gTop.y + gC.sNums - clueCol.length*10 -5,
+                'Pixel', ys.length, 6)
                 .setOrigin(0, 0.5)
                 .setTint(Colors.primary.dark).setAlpha(0.5)
-            );
+            });
           }
-          q = 0;
+          ys = [];
         }
       }
       if (all0) {
         for (let y = 0; y < side; y++) { paintX(x, y, true); }
       }
-      txtCols.push(txtCol);
-      // this.add.bitmapText(pTop.x + x*pxSide +2, gTop.y + gC.sNums -1, 'Pixel', txt, 6)
+      clueCols.push(clueCol);
+      // this.add.bitmapText(pTop.x + x*pxSide +2, gTop.y + gC.sNums -1, 'Pixel', clue, 6)
       //   .setOrigin(0, 1).setTint(Colors.primary.dark).setAlpha(0.5);
     }
 
 
+    const validateRow = (x, y)=>{
+      let isComplete = true;
+      clueRows.at(y).forEach( (col, i) => {
+        col.xs = col.xs.filter( cx => cx != x );
+        if (col.xs.length === 0) { col.txt.setAlpha(0.1); }
+        else { isComplete = false; }
+      });
+      if (isComplete) {
+        grid.at(y).forEach( (r, x) => {
+          if ( r.isPaint === false && r.obj != null ) {
+            paintX(x, y, true);
+          }
+        });
+      }
+    };
+
+    const validateCol = (x, y)=>{
+      let isComplete = true;
+      clueCols.at(x).forEach(row=>{
+        row.ys = row.ys.filter( cy => cy != y );
+        if (row.ys.length === 0) { row.txt.setAlpha(0.1); }
+        else { isComplete = false; }
+      });
+      if (isComplete) {
+        grid.forEach( (row, y) => {
+          if ( row.at(x).isPaint === false && row.at(x).obj != null ) {
+            paintX(x, y, true);
+          }
+        });
+      }
+    };
+
+
     grid.forEach( (row, y) => {
       row.forEach( (r, x) => {
+        if (r.obj === null) { return; }
         r.obj.on(Phaser.Input.Events.POINTER_OVER, ()=>{
           r.obj.setFillStyle(Colors.primary.dark, 0.1);
           if (isClicking == true) {
             validateCell(r.obj, x, y);
+            validateRow(x, y);
+            validateCol(x, y);
           }
         }).on(Phaser.Input.Events.POINTER_OUT, ()=>{
           r.obj.fillAlpha = 0;
         }).on(Phaser.Input.Events.POINTER_DOWN, ()=>{
           validateCell(r.obj, x, y);
+          validateRow(x, y);
+          validateCol(x, y);
           isClicking = true;
         }).on(Phaser.Input.Events.POINTER_UP, ()=>{
           r.obj.setFillStyle(Colors.primary.dark, 0.1);

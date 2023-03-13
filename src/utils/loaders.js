@@ -1,4 +1,4 @@
-import characters from "../constants/characters.json" assert { type: "json" };
+import { characters } from "../constants/characters.js" ;
 // import groups from "./constants/groups.json" assert { type: "json" };
 
 export const loadCharactersTxts = (scene)=>{

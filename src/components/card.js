@@ -1,5 +1,5 @@
 // import Phaser from "phaser";
-import characters from "../constants/characters.json" assert { type: "json" };
+import { characters } from "../constants/characters.js";
 import { Colors } from "../utils/colors.js";
 
 export const CardSuits = {
