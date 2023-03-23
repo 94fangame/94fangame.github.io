@@ -24,7 +24,7 @@ export class SolitaireCards extends Phaser.Scene {
     }
 
     const btnSave = this.add.existing(
-      new Button(this, 64, 304, BtnTypes.COMMON, BtnSizes.LARGE, 'save', 'Save default')
+      new Button(this, 190, 304, BtnTypes.COMMON, BtnSizes.LARGE, 'save', 'Save default')
     );
 
     // four-suited playing cards
@@ -36,35 +36,22 @@ export class SolitaireCards extends Phaser.Scene {
       for (let i = 0; i < 13; i++) {
         let x = (Math.floor(i/7) + 0.75 + col)*1.1;
         let y = (i % 7 + 1.5)*1.1;
-        let aux = this.add.existing(
-          new Card(this, x * cardSize, y * cardSize, cardSuit, i+1)
-        )
-        .setInteractive();
-        aux.on(Phaser.Input.Events.POINTER_UP, ()=>{
-          // console.log( aux.getCharacter() );
-          if (this.toSwap == null) {
-            this.toSwap = aux;
-          } else {
-            if (this.toSwap == aux) {
-              this.toSwap = null;
-            }
-            else {
-              let auxTxt = aux.getCharacter();
-              aux.setCharacter(this.toSwap.getCharacter());
-              this.toSwap.setCharacter(auxTxt);
-              aux.resetPressed();
-              this.toSwap.resetPressed();
-              this.toSwap = null;
-            }
-          }
-          btnSave.setContent('Save cards', 'save');
-        });
+        this.showCard(x * cardSize, y * cardSize, cardSuit, i, btnSave);
+        //new Card(this, x * cardSize, y * cardSize, cardSuit, i + 1)
       }
     }
     displaySuit(CardSuits.HEARTS, 0);
     displaySuit(CardSuits.SPADES, 2.25);
     displaySuit(CardSuits.DIAMONDS, 4.5);
     displaySuit(CardSuits.CLOVERS, 6.75);
+
+    //EXTRA CHARS.
+    const extra_chars = 2;
+    for (let i = 0; i < extra_chars; i++) {
+      let x = 26+i*(cardSize+4)
+      let y = 300;
+      this.showCard(x, y, CardSuits.NONE, i, btnSave);
+    }
 
     //TITLE
     this.add.bitmapText(184, 6, 'Pixel','Swap as you like!', 16)
@@ -85,4 +72,30 @@ export class SolitaireCards extends Phaser.Scene {
     });
   }
 
+
+  showCard(x_pos, y_pos, cardSuit, i, btnSave) {
+    let aux = this.add.existing(
+      new Card(this, x_pos, y_pos, cardSuit, i + 1)
+    )
+      .setInteractive();
+    aux.on(Phaser.Input.Events.POINTER_UP, () => {
+      // console.log( aux.getCharacter() );
+      if (this.toSwap == null) {
+        this.toSwap = aux;
+      } else {
+        if (this.toSwap == aux) {
+          this.toSwap = null;
+        }
+        else {
+          let auxTxt = aux.getCharacter();
+          aux.setCharacter(this.toSwap.getCharacter());
+          this.toSwap.setCharacter(auxTxt);
+          aux.resetPressed();
+          this.toSwap.resetPressed();
+          this.toSwap = null;
+        }
+      }
+      btnSave.setContent('Save cards', 'save');
+    });
+  }
 }

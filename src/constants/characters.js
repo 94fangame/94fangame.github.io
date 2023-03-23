@@ -207,5 +207,13 @@ export const characters =
   {
     "name": "Hiyama",
     "groups": ["AB"]
+  },
+  {
+    "name": "Northdin",
+    "groups": ["V"]
+  },
+  {
+    "name": "Ventrue",
+    "groups": ["V"]
   }
 ]

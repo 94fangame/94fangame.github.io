@@ -7,6 +7,8 @@ export const CardSuits = {
   SPADES: 1,
   DIAMONDS: 2,
   CLOVERS: 3,
+
+  NONE: 4,
 }
 export const CardColors = {
   RED: true,
@@ -16,7 +18,7 @@ export const CardColors = {
 export default class Card extends Phaser.GameObjects.Container {
 
   getCardIdx(cardSuit, num){
-    return cardSuit + 4*(num-1);
+    return cardSuit + 5*(num-1);
   };
 
   constructor (scene, x, y, cardSuit, num) {

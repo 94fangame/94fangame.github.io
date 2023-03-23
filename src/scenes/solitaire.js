@@ -41,7 +41,7 @@ export class Solitaire extends Phaser.Scene {
       new Button(this, 134, 304, BtnTypes.EASY + this.level, BtnSizes.SMALL, 'new', 'New')
     );
     const btnChangeLvl = this.add.existing(
-      new Button(this, 210, 304, BtnTypes.EASY + this.level, BtnSizes.LARGE, 'change-lvl', 'Change level')
+      new Button(this, 210, 304, BtnTypes.EASY + this.level, BtnSizes.LARGE, 'change-lvl', '+ options')//Change level
     );
     const btnBack = this.add.existing(
       new Button(this, 288, 304, BtnTypes.CANCEL, BtnSizes.SMALL, 'undo', 'Undo')
