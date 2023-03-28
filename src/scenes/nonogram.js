@@ -14,6 +14,7 @@ export class Nonogram extends Phaser.Scene {
     this.load.spritesheet('hearts','./assets/ui/hearts.png', {frameWidth: 16, frameHeight: 16});
     this.load.image('congrats','./assets/ui/congrats.png');
     this.load.image('lose','./assets/ui/losing.png');
+    this.load.image('star','./assets/ui/particle-star.png');
   }
 
   init(data) {
@@ -45,12 +46,12 @@ export class Nonogram extends Phaser.Scene {
     const bottomY = 312;
     let qToComplete = 0;
     let qCompleted = 0;
-    // let win = false;
 
     // GRID
     // Colors
     let grid = [];
-    let img = this.add.image(pTop.x+(side-1)*pxSide/2, pTop.y+(side-1)*pxSide/2,this.character).setScale(pxSide).setVisible(false);
+    let img = this.add.image(pTop.x+(side-1)*pxSide/2, pTop.y+(side-1)*pxSide/2,this.character)
+              .setScale(pxSide).setAlpha(0);
     for (let y = 0; y < side; y++) {
       let row = [];
       for (let x = 0; x < side; x++) {
@@ -64,16 +65,17 @@ export class Nonogram extends Phaser.Scene {
 
 
     let hearts = [];
-    let livesLost = 0, maxLives = 5;
+    let livesLost = 0, maxLives = 7;
+    let xPadLives = 160 - ((maxLives-2) * 16)/2;
     for (let i = 0; i < maxLives; i++) {
-      hearts.push( this.add.image(144 + i * 20, 16, 'hearts', 0) );
+      hearts.push( this.add.image(xPadLives + i * 20, 16, 'hearts', 0) );
     }
 
 
     let btnPaint = new Button(this, 174+9, bottomY, BtnTypes.EMPTY, BtnSizes.ICON, '', '');
     let btnBlock = new Button(this, 174-9, bottomY, BtnTypes.EMPTY, BtnSizes.ICON, '', 'x');
-    btnPaint.setTint(Colors.accent.light);
-    btnPaint.add( this.add.rectangle(0, -1, 6, 6, Colors.dark) )
+    btnPaint.setTint( Colors.accent.light );
+    btnPaint.add( this.add.rectangle(0, -1, 6, 6, Colors.dark) );
     btnPaint.on(Phaser.Input.Events.POINTER_DOWN, ()=>{
       isPainting = true;
       btnPaint.setTint(Colors.accent.light);
@@ -84,9 +86,9 @@ export class Nonogram extends Phaser.Scene {
       btnBlock.setTint(Colors.accent.light);
       btnPaint.setTint(Colors.light);
     });
-    this.add.existing(btnPaint);
-    this.add.existing(btnBlock);
-    let btnRetry = this.add.existing( new Button(this, 288, bottomY, BtnTypes.COMMON, BtnSizes.SMALL, 'retry', 'Retry') );
+    let btnRetry = new Button(this, 288, bottomY, BtnTypes.COMMON, BtnSizes.SMALL, 'retry', 'Retry');
+    let btnExit = new Button(this, 32, bottomY, BtnTypes.CANCEL, BtnSizes.SMALL, 'cancel', 'Exit');
+    
     
     const getXYworld = (x, y)=>{
       x = pTop.x + (x+.5)*pxSide -0.5;
@@ -105,18 +107,82 @@ export class Nonogram extends Phaser.Scene {
           .setTint(isOk ? Colors.primary.dark : Colors.primary.light);
       }
     }
-    
+
+    const win = ()=>{
+      // img.setVisible(true);
+      this.add.particles('star').createEmitter({
+        x: 160,
+        y: 160,
+        speed: 200,
+        scale: {random: [0.75, 0.25]},
+        gravityY: 20,
+        frequency: 10,
+        blendMode: 'ADD',
+      });
+      let wonTxt = this.add.bitmapText(160, 32, 'Pixel bold','YOU WON!!!')
+                    .setOrigin(0.5).setTint(Colors.accent.main);
+      this.children.bringToTop(img);
+      this.tweens.add({
+        targets: img,
+        alpha: 1,
+        x: 160,
+        y: 160,
+        scale: pxSide * 1.25,
+        ease: 'Sine.easeInOut',
+        duration: 500,
+      });
+      this.tweens.add({
+        targets: this.children.getAll().filter(
+          c => ![img, wonTxt, btnExit, btnRetry].includes(c)
+        ),
+        alpha: 0,
+        ease: 'Sine.easeInOut',
+        duration: 500,
+      });
+      // this.add.existing( new Congrats(this) );
+      localStorage.setItem(this.character, true);
+      btnExit.setType(BtnTypes.ACCENT);
+      btnExit.setPosition(160, 260);
+      btnRetry.setPosition(160, 292);
+      this.children.bringToTop(btnExit);
+      this.children.bringToTop(btnRetry);
+    };
+
+    const lose = ()=>{
+      this.tweens.add({
+        targets: this.children.getAll().filter(
+          c => ![img, btnExit, btnRetry].includes(c)
+        ),
+        alpha: 0.25,
+        ease: 'Sine.easeInOut',
+        duration: 500,
+      });
+      console.log('No more lives :c');
+      this.add.bitmapText(168, 96, 'Pixel bold','No lives left :c').setOrigin(0.5).setTint(Colors.primary.dark);
+      this.add.image(168, 160, 'lose');
+      
+      for (let y = 0; y < side; y++) {
+        for (let x = 0; x < side; x++) {
+          if (grid.at(y).at(x).obj != null) {
+            grid.at(y).at(x).obj.removeInteractive();
+          };
+        }
+      }
+      
+      btnBlock.removeInteractive();
+      btnPaint.removeInteractive();
+      btnRetry.setPosition(168, 216);
+      btnExit.setPosition(168, 292);
+      this.children.bringToTop(btnRetry);
+      this.children.bringToTop(btnExit);
+    };
+
     const validateCell = (r, x, y)=>{
       if (grid.at(y).at(x).isPaint != isPainting) {
         if (livesLost < maxLives) {
           hearts[livesLost].setTexture('hearts', 1);
           livesLost++;
-          if (livesLost == maxLives) {
-            console.log('No more lives :c');
-            this.add.bitmapText(168, 136, 'Pixel bold','No lives left :c').setOrigin(0.5).setTint(Colors.primary.dark);
-            this.add.image(168, 192, 'lose');
-            r.setActive(false);
-          }
+          if (livesLost == maxLives) { lose(r); }
         }
       }
       if (livesLost != maxLives) {
@@ -126,11 +192,7 @@ export class Nonogram extends Phaser.Scene {
           r.removeInteractive();
           // console.log(qCompleted + '/' + qToComplete);
         } else { paintX(x, y, !isPainting); }
-        if (qCompleted == qToComplete) {
-          this.add.existing( new Congrats(this) );
-          localStorage.setItem(this.character, true);
-          // this.scene.start('Nonogram lvls');
-        }
+        if (qCompleted == qToComplete) { win(); }
       }
     };
 
@@ -224,7 +286,7 @@ export class Nonogram extends Phaser.Scene {
               ys: ys,
               txt: this.add.bitmapText(
                 pTop.x+2 + x*pxSide,
-                gTop.y + gC.sNums - clueCol.length*10 -5,
+                gTop.y + gC.sNums - clueCol.length*10 -4,
                 'Pixel', ys.length, 6)
                 .setOrigin(0, 0.5)
                 .setTint(Colors.primary.dark).setAlpha(0.5)
@@ -299,9 +361,20 @@ export class Nonogram extends Phaser.Scene {
     });
     
     
-    let btnExit = this.add.existing( new Button(this, 32, bottomY, BtnTypes.COMMON, BtnSizes.SMALL, 'cancel', 'Exit') );
+    this.add.existing(btnExit);
+    this.add.existing(btnPaint);
+    this.add.existing(btnBlock);
+    this.add.existing(btnRetry);
     btnExit.on(Phaser.Input.Events.POINTER_UP, ()=>{
-      this.scene.start('Nonogram lvls');
+      this.tweens.add({
+        targets: this.children,
+        alpha: 0,
+        ease: 'Sine.easeInOut',
+        duration: 300,
+      });
+      setTimeout(() => {
+        this.scene.start('Nonogram lvls');
+      }, 300);
     });
     btnRetry.on(Phaser.Input.Events.POINTER_UP, ()=>{
       this.scene.restart({char: this.character});

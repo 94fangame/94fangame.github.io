@@ -10,6 +10,7 @@ export default class Button extends Phaser.GameObjects.Container {
   constructor (scene, x, y, type=BtnTypes.COMMON, size=BtnSizes.MEDIUM, icon='', text='') {
     super(scene, x, y);
     
+    this.btnSize = size;
     this.img = scene.add.image( 0, 0, 'btn'+(type == BtnTypes.ACCENT ? '-g':'')+'_'+size );
     this.icon = scene.add.image( 0, 0, 'icon ' + icon);
     this.txt = scene.add.bitmapText(0, -1, 'Pixel', text.toUpperCase(), 24)
@@ -32,38 +33,11 @@ export default class Button extends Phaser.GameObjects.Container {
     this.setSize(this.img.width, this.img.height);
     
     this.Tint = {
-      DEFAULT: Colors.primary.light,
-      HOVER: Colors.primary.main,
-      CLICKED: Colors.primary.dark,
+      DEFAULT: -1,
+      HOVER: -1,
+      CLICKED: -1,
     };
-    if (type != BtnTypes.COMMON) {
-      if (type == BtnTypes.ACCENT) {
-        this.Tint = {
-          DEFAULT: Colors.white,
-          HOVER: Colors.accent.main,
-          CLICKED: Colors.accent.dark,
-        };
-        this.txt.setTint(Colors.dark);
-      }
-      else {
-        switch (type) {
-          case BtnTypes.EMPTY:
-            this.Tint.DEFAULT = Colors.light;
-            this.txt.setTint(Colors.dark);
-            break;
-          case BtnTypes.CANCEL:
-            this.Tint.DEFAULT = Colors.dark; break;
-          case BtnTypes.EASY:
-            this.Tint.DEFAULT = 0x65AB40; break;
-          case BtnTypes.MEDIUM:
-            this.Tint.DEFAULT = Colors.accent.dark; break;
-          case BtnTypes.HARD:
-            this.Tint.DEFAULT = 0xC03533; break;
-        }
-        this.Tint.HOVER = this.Tint.DEFAULT + Colors.hover;
-        this.Tint.CLICKED = this.Tint.DEFAULT + Colors.clicked;
-      }
-    }
+    this.setType(type);
 
     // Interactions
     this.setInteractive();
@@ -116,10 +90,61 @@ export default class Button extends Phaser.GameObjects.Container {
     this.icon.x = -( this.txt.text.length*3 + 4 );
   }
 
-  setTint(color) {
-    this.Tint.DEFAULT = color;
-    this.Tint.HOVER = color + Colors.hover;
-    this.Tint.CLICKED = color + Colors.clicked;
+  setType(type) {
+    this.btnType = type;
+    this.img.setTexture('btn'+(type == BtnTypes.ACCENT ? '-g':'')+'_'+this.btnSize);
+    
+    switch (type) {
+      case BtnTypes.ACCENT:
+        this.setTint(Colors.white, Colors.accent.main, Colors.accent.dark);
+        break;
+      
+      case BtnTypes.COMMON:
+        this.setTint(Colors.primary.light, Colors.primary.main, Colors.primary.dark);
+        break;
+    
+      default:
+        switch (type) {
+          case BtnTypes.CANCEL:
+            this.Tint.DEFAULT = Colors.dark; break;
+          case BtnTypes.EASY:
+            this.Tint.DEFAULT = 0x65AB40; break;
+          case BtnTypes.MEDIUM:
+            this.Tint.DEFAULT = Colors.accent.dark; break;
+          case BtnTypes.HARD:
+            this.Tint.DEFAULT = 0xC03533; break;
+          default:
+            this.Tint.DEFAULT = Colors.light;
+        }
+        this.setTint(this.Tint.DEFAULT);
+        break;
+    }
+  }
+
+  _checkColor(color) {
+    if (color > 0xFFFFFF) { color = 0xFFFFFF; }
+    else if (color < 0x000000) { color = 0x000000; }
+    return color;
+  }
+  _blendColors(cmain, cmul) {
+    cmain = Phaser.Display.Color.IntegerToColor(cmain);
+    cmul = Phaser.Display.Color.IntegerToColor(cmul);
+    if (cmain.v < 0.5) { cmul.darken(33); }
+    return Phaser.Display.Color.GetColor32(
+      cmain.redGL*cmul.redGL*255,
+      cmain.greenGL*cmul.greenGL*255,
+      cmain.blueGL*cmul.blueGL*255,
+      255);
+  }
+
+  setTint(main, hover=null, clicked=null) {
+    if (main > 0x808080 && this.btnType!=BtnTypes.COMMON) {
+      this.txt.setTint(Colors.dark);
+    }
+
+    this.Tint.DEFAULT = main;
+    this.Tint.HOVER = hover ?? this._blendColors(main, Colors.hover);
+    this.Tint.CLICKED = clicked ?? this._blendColors(main, Colors.clicked);
     this.img.setTint(this.Tint.DEFAULT);
   }
 }
