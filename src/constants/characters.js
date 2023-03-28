@@ -215,5 +215,9 @@ export const characters =
   {
     "name": "Ventrue",
     "groups": ["V"]
+  },
+  {
+    "name": "Kuwabara",
+    "groups": ["AB"]
   }
 ]
