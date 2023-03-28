@@ -46,7 +46,7 @@ export class SolitaireCards extends Phaser.Scene {
     displaySuit(CardSuits.CLOVERS, 6.75);
 
     //EXTRA CHARS.
-    const extra_chars = 2;
+    const extra_chars = 3;
     for (let i = 0; i < extra_chars; i++) {
       let x = 26+i*(cardSize+4)
       let y = 300;
